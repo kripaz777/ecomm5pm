@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 # Create your models here.
 
 STATUS = (('active','active'),('inactivate','inactivate'))
@@ -24,6 +24,9 @@ class SubCategory(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	def get_subcat_url(self):
+		return reverse("home:subcategory",kwargs = {'slug':self.slug})
 
 
 class Brand(models.Model):
@@ -50,6 +53,8 @@ class Item(models.Model):
 
 	def __str__(self):
 		return self.title
+	def get_product_url(self):
+		return reverse("home:detail",kwargs = {'slug':self.slug})
 
 
 class Ad(models.Model):
