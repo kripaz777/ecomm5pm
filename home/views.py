@@ -34,3 +34,23 @@ class ProductDetailView(BaseViews):
 	def get(self,request,slug):
 		self.views['details'] = Item.objects.filter(slug = slug)
 		return render(request,'product-details.html',self.views)
+
+
+def review(request):
+	if request.method == 'POST':
+		name = request.POST['name']
+		email = request.POST['email']
+		product = request.POST['product']
+		comment = request.POST['comment']
+
+		data = Review.objects.create(
+			name = name,
+			email = email,
+			product = product,
+			comment = comment
+			)
+		data.save()
+
+	return redirect(f'/detail/{product}')
+
+	
