@@ -78,7 +78,7 @@ class Slider(models.Model):
 
 
 class Review(models.Model):
-	product = models.IntegerField()
+	product = models.CharField(max_length = 400)
 	name = models.CharField(max_length = 200)
 	email = models.EmailField(max_length = 300)
 	comment = models.TextField(blank = True)

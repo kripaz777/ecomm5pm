@@ -299,6 +299,7 @@
 									<p><b>Write Your Review</b></p>
 									
 									<form method = "POST" action="{% url 'home:review' %}">
+										{% csrf_token %}
 										<span>
 											<input type="hidden" value = "{{product.slug}}" name = "product" placeholder="Your Name"/>
 											<input type="text" name = "name" placeholder="Your Name"/>
