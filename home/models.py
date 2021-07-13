@@ -1,7 +1,7 @@
 from django.db import models
 from django.urls import reverse
 # Create your models here.
-
+from django.conf import settings
 STATUS = (('active','active'),('inactivate','inactivate'))
 STOCK = (('In Stock','In Stock'),('Out of Stock','Out of Stock'))
 LABELS = (('new','new'),('hot','hot'),('sale','sale'),('','default'))
@@ -55,6 +55,8 @@ class Item(models.Model):
 		return self.title
 	def get_product_url(self):
 		return reverse("home:detail",kwargs = {'slug':self.slug})
+	def get_cart_url(self):
+		return reverse("home:cart",kwargs = {'slug':self.slug})
 
 
 class Ad(models.Model):
@@ -86,3 +88,20 @@ class Review(models.Model):
 
 	def __str__(self):
 		return self.name
+
+
+class Cart(models.Model):
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete = models.CASCADE)
+	slug = models.CharField(max_length = 300)
+	items =models.ForeignKey(Item,on_delete = models.CASCADE)
+	quantity = models.IntegerField(default=1)
+	total = models.IntegerField(default = 0)
+	checkout = models.BooleanField(default = False)
+
+	def __str__(self):
+		return self.user.username
+
+	def get_deletecart_url(self):
+		return reverse("home:deletecart",kwargs = {'slug':self.slug})
+	def get_removecart_url(self):
+		return reverse("home:removecart",kwargs = {'slug':self.slug})

@@ -101,3 +101,54 @@ class SearchView(BaseViews):
 			return redirect('/')
 		self.views['search_product'] = Item.objects.filter(title__icontains = query)
 		return render(request,'search.html',self.views)
+
+def cart(request,slug):
+
+	if Cart.objects.filter(user = request.user,slug = slug,checkout=False).exists():
+		quantity = Cart.objects.get(user = request.user,slug = slug,checkout=False).quantity
+		price = Item.objects.get(slug = slug).price
+		quantity = quantity+1
+		total = quantity*price
+		Cart.objects.filter(user = request.user,slug = slug,checkout=False).update(quantity=quantity,total = total)
+		return redirect('home:mycart')
+	else:
+		price = Item.objects.get(slug=slug).price
+		username = request.user
+		data = Cart.objects.create(
+			user = username,
+			slug = slug,
+			items = Item.objects.filter(slug=slug)[0],
+			total = price
+			)
+		data.save()
+		return redirect('home:mycart')
+
+class CartView(BaseViews):
+	def get(self,request):
+		self.views['carts'] = Cart.objects.filter(user = request.user,checkout=False)
+		return render(request,'cart.html',self.views)
+
+def deletecart(request,slug):
+	if Cart.objects.filter(slug = slug,user = request.user,checkout=False).exists():
+		Cart.objects.filter(slug = slug,user = request.user,checkout=False).delete()
+	return redirect('home:mycart')
+
+def removecart(request,slug):
+	if Cart.objects.filter(slug = slug,user = request.user,checkout=False).exists():
+		quantity = Cart.objects.get(slug = slug,user = request.user,checkout=False).quantity
+		if quantity >1:
+			quantity = quantity -1
+			price = Item.objects.get(slug = slug).price
+			total = quantity*price
+			Cart.objects.filter(slug = slug,user = request.user,checkout=False).update(quantity = quantity,total = total)
+	return redirect('home:mycart')
+
+
+
+# -------------------------------------API Section----------------------------------
+
+from rest_framework import viewsets
+from .serializers import *
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
