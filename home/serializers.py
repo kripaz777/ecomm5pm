@@ -6,4 +6,4 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['title','slug','price','discounted_price','description','image','category','subcategory','status','stock','labels']
-
+        	# "__all__"

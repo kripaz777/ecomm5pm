@@ -11,5 +11,6 @@ router.register(r'item', ItemViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    
+    path('items',FilterItemViewSet.as_view(),name = 'items'),
+    path('itemss/<int:pk>',ItemsViewSet.as_view()),
 ]

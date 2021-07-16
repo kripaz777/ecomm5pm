@@ -147,8 +147,47 @@ def removecart(request,slug):
 
 # -------------------------------------API Section----------------------------------
 
-from rest_framework import viewsets
+from rest_framework import viewsets,generics
 from .serializers import *
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter,SearchFilter
+from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework.response import Response
+from rest_framework import status
+
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+
+class FilterItemViewSet(generics.ListAPIView):
+	queryset = Item.objects.all()
+	serializer_class = ItemSerializer
+	filter_backends = (DjangoFilterBackend,OrderingFilter,SearchFilter)
+	filter_fields = ['id','title','price','category','subcategory','labels']
+	ordering_fields = ['price','id','title']
+	search_fields = ['title','description']
+
+class ItemsViewSet(APIView):
+	def get_object(self, pk):
+		try:
+			return Item.objects.get(pk=pk)
+		except:
+			raise Http404
+	def get(self,request,pk,format = None):
+		item = self.get_object(pk)
+		serializer = ItemSerializer(item)
+		return Response(serializer.data)
+	def put(self,request,pk,format = None):
+		item = self.get_object(pk)
+		serializer = ItemSerializer(item,data = request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data)
+		return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+
+	def delete(self,request,pk,format=None):
+		item = self.get_object(pk)
+		item.delete()
+		return Response("Item Deleted",status = status.HTTP_200_OK)

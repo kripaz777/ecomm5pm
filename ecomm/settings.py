@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'home',
     'contact',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'USER': 'mydatabaseuser',
+#         'NAME': 'mydatabase',
+#         'TEST': {
+#             'NAME': 'mytestdatabase',
+#         },
+#     },
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

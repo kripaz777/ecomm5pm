@@ -24,7 +24,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('contact', include('contact.urls')),
     path('accounts/',include('django.contrib.auth.urls')),
-    path('api_urls',include('home.api_urls')),
+    path('api_urls/',include('home.api_urls')),
 ]
 if settings.DEBUG:
 	urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
